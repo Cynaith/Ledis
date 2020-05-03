@@ -1,4 +1,4 @@
-package com.github.lightredis;
+package test;
 
 import com.github.lightredis.jedis.Ledis;
 import com.github.lightredis.util.CutTime;
