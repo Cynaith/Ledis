@@ -1,37 +1,35 @@
 package test;
 
 import com.github.lightredis.jedis.Ledis;
-import com.github.lightredis.util.CutTime;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
  * @USER: lynn
  * @DATE: 2020/5/3
  **/
-public class Test {
+public class StringTest {
     /**
      * 测试Ledis操作
      * 100000数据set : 3617ms
      * 100000数据scan: 237ms
      */
-    public static void main(String[] args) {
-        CutTime cutTime = CutTime.getInstance();
-        List<String> result ;
-        cutTime.startTime();
-        Ledis ledis = Ledis.getInstance();
-        result = ledis.scan("ledis", "7");
-        System.out.println(cutTime.endTime());
-        Iterator<String> iterator = result.listIterator();
-        while (true){
-            if (iterator.hasNext()){
-                System.out.println(iterator.next());
-            }
-            else break;
-        }
-
-    }
+//    public static void main(String[] args) {
+//        CutTime cutTime = CutTime.getInstance();
+//        List<String> result ;
+//        cutTime.startTime();
+//        Ledis ledis = Ledis.getInstance();
+//        result = ledis.scan("ledis", "7");
+//        System.out.println(cutTime.endTime());
+//        Iterator<String> iterator = result.listIterator();
+//        while (true){
+//            if (iterator.hasNext()){
+//                System.out.println(iterator.next());
+//            }
+//            else break;
+//        }
+//
+//    }
     /**
      * 测试Jedis操作
      * 100000数据set : 3426
@@ -54,4 +52,9 @@ public class Test {
 //    System.out.println(cutTime.endTime());
 //}
 
+    public static void main(String[] args) {
+       Ledis ledis = Ledis.getInstance();
+       List<String> list = ledis.mgets("empty","ledis:num1","ledis:nu2");
+        System.out.println(list.get(0)+list.get(1));
+    }
 }
