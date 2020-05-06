@@ -263,7 +263,7 @@ public class Ledis implements LedisCommands {
         Set<Object> result = new HashSet<Object>();
         Set<byte[]> objects = jedis.smembers(key.getBytes());
         Iterator<byte[]> it = objects.iterator();
-        for (byte[] obj:objects){
+        for (byte[] obj : objects) {
             try {
                 result.add(SerializeObjectTool.unserizlize(obj));
             } catch (Exception e) {
@@ -311,7 +311,7 @@ public class Ledis implements LedisCommands {
     public Set<Object> sinter(String key1, String key2) {
         Set<Object> result = new HashSet<Object>();
         Set<byte[]> objects = jedis.sinter(key1.getBytes(), key2.getBytes());
-        for (byte[] obj:objects){
+        for (byte[] obj : objects) {
             try {
                 result.add(SerializeObjectTool.unserizlize(obj));
             } catch (Exception e) {
@@ -383,7 +383,7 @@ public class Ledis implements LedisCommands {
     }
 
     public Double zscore(String key, String value) {
-        return jedis.zscore(key,value);
+        return jedis.zscore(key, value);
     }
 
     public Long zrank(String key, String value) {
@@ -391,7 +391,7 @@ public class Ledis implements LedisCommands {
     }
 
     public Long zrem(String key, String... value) {
-        return jedis.zrem(key,value);
+        return jedis.zrem(key, value);
     }
 
     public Long zcard(String key) {
@@ -399,10 +399,101 @@ public class Ledis implements LedisCommands {
     }
 
     public Long zcount(String key, double i, double j) {
-        return jedis.zcount(key,i,j);
+        return jedis.zcount(key, i, j);
     }
 
     public Double zincrby(String key, double n, String value) {
         return jedis.zincrby(key, n, value);
+    }
+
+
+    public String hmset(String key, Map<String, Object> map) {
+        Map<byte[], byte[]> byteMap = new HashMap<byte[], byte[]>();
+        for (Map.Entry<String, Object> objectEntry : map.entrySet()) {
+            if (objectEntry.getValue() instanceof String) {
+                byteMap.put(objectEntry.getKey().getBytes(), objectEntry.getValue().toString().getBytes());
+            } else {
+                byteMap.put(objectEntry.getKey().getBytes(), SerializeObjectTool.serialize(objectEntry.getValue()));
+            }
+        }
+        return jedis.hmset(key.getBytes(), byteMap);
+    }
+
+    public List<Object> hmget(String key, String... mapkeys) {
+        byte[][] byteKeys = new byte[mapkeys.length][];
+        for (int i = 0; i < mapkeys.length; i++) {
+            byteKeys[i] = mapkeys.toString().getBytes();
+        }
+        List<byte[]> init = jedis.hmget(key.getBytes(), byteKeys);
+        List<Object> result = new ArrayList<Object>();
+        for (int i = 0; i < init.size(); i++) {
+            try{
+                result.add(SerializeObjectTool.unserizlize(init.get(i)));
+            }catch (UnserizlizeException e){
+                result.add(new String(init.get(i)));
+            }
+        }
+        return result;
+    }
+
+    public Long hset(String key, String mapkey, Object mapvalue) {
+        if (mapvalue instanceof String) {
+            return jedis.hset(key, mapkey, mapvalue.toString());
+        } else {
+            return jedis.hset(key.getBytes(), mapkey.getBytes(), SerializeObjectTool.serialize(mapvalue));
+        }
+
+    }
+
+    public Map<String, Object> hgetAll(String key) {
+        Map<String, Object> results = new HashMap<String, Object>();
+        Map<byte[], byte[]> init = jedis.hgetAll(key.getBytes());
+        for (Map.Entry<byte[], byte[]> result : init.entrySet()) {
+            try {
+                results.put(new String(result.getKey()), SerializeObjectTool.unserizlize(result.getValue()));
+            } catch (UnserizlizeException e) {
+                results.put(new String(result.getKey()), new String(result.getValue()));
+            }
+
+        }
+        return results;
+    }
+
+    public Set<String> hkeys(String key) {
+        Set<String> results = new HashSet<String>();
+        Set<byte[]> init = jedis.hkeys(key.getBytes());
+        for (byte[] result : init) {
+            results.add(new String(result));
+        }
+        return results;
+    }
+
+    public List<Object> hvals(String key) {
+        List<Object> results = new ArrayList<Object>();
+        List<byte[]> init = jedis.hvals(key.getBytes());
+        for (int i = init.size() - 1; i >= 0; i--) {
+            try {
+                results.add(SerializeObjectTool.unserizlize(init.get(i)));
+            } catch (UnserizlizeException e) {
+                results.add(new String(init.get(i)));
+            }
+        }
+        return results;
+    }
+
+    public Long hdel(String key, String... keys) {
+        byte[][] byteKeys = new byte[keys.length][];
+        for (int i = 0; i < keys.length; i++) {
+            byteKeys[i] = keys.toString().getBytes();
+        }
+        return jedis.hdel(key.getBytes(), byteKeys);
+    }
+
+    public Long hlen(String key) {
+        return jedis.hlen(key);
+    }
+
+    public boolean hexists(String key, String mapkey) {
+        return jedis.hexists(key.getBytes(), mapkey.getBytes());
     }
 }
