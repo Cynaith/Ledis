@@ -1,4 +1,4 @@
-package com.github.lightredis.util;
+package com.github.cynaith.util;
 
 /**
  * @USER: lynn

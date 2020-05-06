@@ -1,6 +1,6 @@
-package com.github.lightredis.jedis;
+package com.github.cynaith.jedis;
 
-import com.github.lightredis.util.JedisPool;
+import com.github.cynaith.util.JedisPool;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;

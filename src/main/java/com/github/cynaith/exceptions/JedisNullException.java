@@ -1,4 +1,4 @@
-package com.github.lightredis.exceptions;
+package com.github.cynaith.exceptions;
 
 /**
  * @USER: lynn

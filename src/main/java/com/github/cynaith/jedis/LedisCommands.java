@@ -1,4 +1,4 @@
-package com.github.lightredis.jedis;
+package com.github.cynaith.jedis;
 
 import java.util.List;
 import java.util.Map;

@@ -1,14 +1,6 @@
 package test;
 
-import com.github.lightredis.jedis.Ledis;
-import com.github.lightredis.util.CutTime;
-import com.github.lightredis.util.SerializeObjectTool;
-
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @USER: lynn

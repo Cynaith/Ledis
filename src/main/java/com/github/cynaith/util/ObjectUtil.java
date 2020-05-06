@@ -1,6 +1,4 @@
-package com.github.lightredis.util;
-
-import redis.clients.jedis.Jedis;
+package com.github.cynaith.util;
 
 import java.util.List;
 

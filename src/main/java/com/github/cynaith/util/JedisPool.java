@@ -1,6 +1,6 @@
-package com.github.lightredis.util;
+package com.github.cynaith.util;
 
-import com.github.lightredis.exceptions.JedisNullException;
+import com.github.cynaith.exceptions.JedisNullException;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPoolConfig;
 

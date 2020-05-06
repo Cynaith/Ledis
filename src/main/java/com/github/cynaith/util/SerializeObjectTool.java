@@ -1,6 +1,6 @@
-package com.github.lightredis.util;
+package com.github.cynaith.util;
 
-import com.github.lightredis.exceptions.UnserizlizeException;
+import com.github.cynaith.exceptions.UnserizlizeException;
 
 import java.io.*;
 
