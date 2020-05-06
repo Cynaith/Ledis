@@ -1,5 +1,7 @@
 package com.github.lightredis.util;
 
+import com.github.lightredis.exceptions.UnserizlizeException;
+
 import java.io.*;
 
 /**
@@ -37,10 +39,8 @@ public class SerializeObjectTool {
             Object obj = oii.readObject();
             return obj;
         } catch (Exception e) {
-
-            e.printStackTrace();
+            throw new UnserizlizeException("UnSerizlize error");
         }
-        return null;
     }
 
 }
