@@ -243,8 +243,55 @@ public interface LedisCommands {
 
     /**
      * 以下为 Hash
+     * @return
      */
 
+    /**
+     * Map<String,String>和Map<byte[],byte[]>
+     *     转换成----> Map<String,Object>
+     *     注：Object支持String，会自动转换
+     * @param key
+     * @param map
+     * @return
+     */
+    String hmset(String key, Map<String,Object> map);
 
+    /**
+     * 获取Hash中一个或多个元素value 包含Object和String
+     * @param key
+     * @param mapkeys
+     * @return
+     */
+    List<Object> hmget(String key,String... mapkeys);
 
+    /**
+     * 支持向HashMap插入Object
+     * @param key
+     * @param mapkey
+     * @param mapvalue
+     * @return
+     */
+    Long hset(String key, String mapkey, Object mapvalue);
+
+    /**
+     * 获取全部元素k-V 包括Object和String
+     * @param key
+     * @return
+     */
+    Map<String,Object> hgetAll(String key);
+
+    Set<String> hkeys(String key);
+
+    /**
+     * 获取全部元素的value 包括Object和String
+     * @param key
+     * @return
+     */
+    List<Object> hvals(String key);
+
+    Long hdel(String key, String... keys);
+
+    Long hlen(String key);
+
+    boolean hexists(String key,String mapkey);
 }
