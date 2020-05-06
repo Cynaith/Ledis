@@ -1,13 +1,16 @@
 package com.github.lightredis.jedis;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
+ * 在Ledis中 key只允许String类型
+ * 除SortSet外，value都可以为Object
  * @USER: lynn
  * @DATE: 2020/5/3
  **/
-public interface LedisCommands{
+public interface LedisCommands {
     String set(String key,String value);
 
     String get(String key);
@@ -123,12 +126,125 @@ public interface LedisCommands{
 
     /**
      * 以下为Set操作
+     *
+     */
+
+    /**
      * Set不允许出现重复元素
      * 对象属性相同也是重复的
      * @return
      */
     Long sadd(String key, Object... objects);
 
+    /**
+     * 获取key对应Set的所有元素 （不区分对象字符串）
+     *
+     * @param key
+     * @return
+     */
     Set<Object> smember(String key);
+
+    /**
+     * 删除key对应Set中的Object （也可以是String）
+     * @param key
+     * @param objects
+     * @return
+     */
+    Long srem(String key, Object... objects);
+
+    /**
+     * 随机弹出一个元素 （不区分对象字符串）
+     * @param key
+     * @return
+     */
+    Object spop(String key);
+
+
+    Long scared(String key);
+
+    /**
+     * 将元素从 key1(Set) 中移到 key2(Set) 中 （不区分对象字符串）
+     * @param key1
+     * @param key2
+     * @param val
+     * @return
+     */
+    Long smove(String key1, String key2, Object val);
+
+    /**
+     * 获取集合key1和key2的交集 (不区分对象字符串)
+     * @param key1
+     * @param key2
+     * @return
+     */
+    Set<Object> sinter(String key1,String key2);
+    /**
+     * 获取集合key1和key2的并集 (不区分对象字符串)
+     * @param key1
+     * @param key2
+     * @return
+     */
+    Set<Object> sunion(String key1,String key2);
+
+    /**
+     * 获取集合key1和key2的差集 (不区分对象字符串)
+     * @param key1
+     * @param key2
+     * @return
+     */
+    Set<Object> sdiff(String key1,String key2);
+
+
+    /**
+     * 以下为 有序集合Zsort
+     *
+     * @return
+     */
+
+    Long zadd(String key, Map<String,Double> map);
+
+    Long zadd(String key, double score,String member);
+
+    Set<String> zrange(String key, int i , int j);
+
+    /**
+     * 修改原返回值 Map<Tuple> -> Map<String , Double>
+     *
+     * @param key
+     * @param i
+     * @param j
+     * @return
+     */
+    Map<String , Double> zrangeWithScores(String key, int i , int j);
+
+
+    Set<String> zrangeByScore(String key, double i , double j);
+
+    /**
+     * 修改原返回值 Map<Tuple> -> Map<String , Double>
+     * @param key
+     * @param i
+     * @param j
+     * @return
+     */
+    Map<String, Double> zrangByScoreWithScores(String key, double i , double j);
+
+    Double zscore(String key, String value);
+
+    Long zrank(String key,String value);
+
+    Long zrem(String key, String... value);
+
+    Long zcard(String key);
+
+    Long zcount(String key , double i ,double j);
+
+    Double zincrby(String key, double n, String value);
+
+    /**
+     * 以下为 Hash
+     */
+
+
 
 }
