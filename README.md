@@ -1,5 +1,6 @@
 # Ledis
-![https://img.shields.io/aur/license/android-studio](https://img.shields.io/aur/license/android-studio)
+![https://img.shields.io/apm/l/vim-mode](https://img.shields.io/apm/l/vim-mode)
+![https://img.shields.io/appveyor/build/gruntjs/grunt?label=1.2.release](https://img.shields.io/appveyor/build/gruntjs/grunt?label=1.2.release)
 > 可以对Redis直接存储对象
 
 #### 使用方法 
@@ -9,7 +10,7 @@ Maven
 <dependency>
   <groupId>com.github.cynaith</groupId>
   <artifactId>LightRedis</artifactId>
-  <version>1.0-RELEASE</version>
+  <version>1.2-RELEASE</version>
 </dependency>
 ```
 
