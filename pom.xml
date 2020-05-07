@@ -9,7 +9,7 @@
     <groupId>com.github.cynaith</groupId>
     <artifactId>LightRedis</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-RELEASE</version>
+    <version>1.2-RELEASE</version>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-            <version>2.9.0</version>
+            <version>3.2.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/cglib/cglib -->
