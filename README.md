@@ -5,6 +5,8 @@
 
 #### 使用方法 
 
+[中文API文档]( https://apidoc.gitee.com/Cynaith/Ledis)
+
 Maven
 ```xml
 <dependency>
