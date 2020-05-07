@@ -9,8 +9,8 @@ import redis.clients.jedis.Jedis;
 import java.lang.reflect.Method;
 
 /**
- * @USER: lynn
- * @DATE: 2020/5/3
+ *  USER: lynn
+ *  DATE: 2020/5/3
  **/
 public class LedisInterceptor implements MethodInterceptor {
 

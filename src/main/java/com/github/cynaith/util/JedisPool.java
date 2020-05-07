@@ -4,10 +4,7 @@ import com.github.cynaith.exceptions.JedisNullException;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPoolConfig;
 
-/**
- * @USER: lynn
- * @DATE: 2020/5/3
- **/
+
 public class JedisPool {
     private JedisPool(){
     }

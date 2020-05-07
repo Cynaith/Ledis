@@ -1,9 +1,6 @@
 package com.github.cynaith.exceptions;
 
-/**
- * @USER: lynn
- * @DATE: 2020/5/3
- **/
+
 public class JedisNullException extends RuntimeException {
     public JedisNullException(String message){
         super(message);

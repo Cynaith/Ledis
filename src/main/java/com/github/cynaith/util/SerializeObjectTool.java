@@ -4,10 +4,7 @@ import com.github.cynaith.exceptions.UnserizlizeException;
 
 import java.io.*;
 
-/**
- * @USER: lynn
- * @DATE: 2020/5/5
- **/
+
 public class SerializeObjectTool {
     //序列化
     public static byte[] serialize(Object obj) {

@@ -1,9 +1,6 @@
 package com.github.cynaith.util;
 
-/**
- * @USER: lynn
- * @DATE: 2020/5/3
- **/
+
 public class CutTime {
 
     private static CutTime cutTime = new CutTime();

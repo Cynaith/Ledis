@@ -2,6 +2,16 @@
 > 可以对Redis直接存储对象
 
 #### 使用方法 
+
+Maven
+```xml
+<dependency>
+  <groupId>com.github.cynaith</groupId>
+  <artifactId>LightRedis</artifactId>
+  <version>1.0-RELEASE</version>
+</dependency>
+```
+
 ```java
 Ledis ledis = new Ledis("127.0.0.1",6379);
 ```

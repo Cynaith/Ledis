@@ -3,8 +3,8 @@ package com.github.cynaith.util;
 import java.util.List;
 
 /**
- * @USER: lynn
- * @DATE: 2020/5/3
+ *  USER: lynn
+ *  DATE: 2020/5/3
  **/
 public class ObjectUtil {
     public static boolean isEmpty(Object object){

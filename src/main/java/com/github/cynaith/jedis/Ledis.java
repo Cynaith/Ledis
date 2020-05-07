@@ -4,7 +4,6 @@ import com.github.cynaith.exceptions.LedisDataException;
 import com.github.cynaith.exceptions.UnserizlizeException;
 import com.github.cynaith.util.ObjectUtil;
 import com.github.cynaith.util.SerializeObjectTool;
-import com.sun.xml.internal.ws.encoding.soap.SerializationException;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
@@ -14,9 +13,10 @@ import redis.clients.jedis.exceptions.JedisDataException;
 import java.util.*;
 
 /**
- * @USER: lynn
- * @DATE: 2020/5/3
- * refer : https://blog.csdn.net/weixin_34152820/article/details/86443458
+ *  @author : Cynaith
+ *  @see LedisCommands
+ *  @see SerializeObjectTool
+ *  refer : https://blog.csdn.net/weixin_34152820/article/details/86443458
  **/
 public class Ledis implements LedisCommands {
 
@@ -101,9 +101,9 @@ public class Ledis implements LedisCommands {
     /**
      * 当key不存在时，返回emptyValue
      *
-     * @param emptyValue
-     * @param key
-     * @return
+     * @param emptyValue emptyValue
+     * @param key key
+      * @return object object
      */
     public List<String> mgets(String emptyValue, String... key) {
         List<String> results = new ArrayList<String>();
@@ -125,7 +125,7 @@ public class Ledis implements LedisCommands {
             return jedis.set(key.getBytes(), SerializeObjectTool.serialize(value));
 
         else {
-            throw new SerializationException("object should be serialization");
+            throw new UnserizlizeException("object should be serialization");
         }
     }
 
@@ -157,9 +157,9 @@ public class Ledis implements LedisCommands {
     /**
      * 从左边追加一个Object到list(key)中
      *
-     * @param key
-     * @param objects
-     * @return
+     * @param key key
+     * @param objects objects
+      * @return object object
      */
     public Long lpush(String key, Object... objects) {
         byte[][] bytes = new byte[objects.length][];
@@ -172,9 +172,9 @@ public class Ledis implements LedisCommands {
     /**
      * 从右边追加一个Object到list(key)中
      *
-     * @param key
-     * @param objects
-     * @return
+     * @param key key
+     * @param objects objects
+      * @return object object
      */
     public Long rpush(String key, Object... objects) {
         byte[][] bytes = new byte[0][];
