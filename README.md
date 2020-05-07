@@ -73,3 +73,12 @@ Ledis ledis = new Ledis("127.0.0.1",6379);
 - `List<Object> hvals(String key);`
     - 获取全部元素的value 包括Object和String
 
+
+
+- 1.0 release
+发布基础版本
+- 1.1 release
+修改for -> foreach
+- 1.2 release
+修复依赖问题
+修复scan的bug
