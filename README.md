@@ -1,4 +1,5 @@
 # Ledis
+![https://img.shields.io/aur/license/android-studio](https://img.shields.io/aur/license/android-studio)
 > 可以对Redis直接存储对象
 
 #### 使用方法 
