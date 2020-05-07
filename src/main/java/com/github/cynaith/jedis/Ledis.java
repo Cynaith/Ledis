@@ -39,13 +39,13 @@ public class Ledis implements LedisCommands {
         this.jedis = jedis;
     }
 
-    public Jedis getJedis() {
-        return jedis;
-    }
+//    public Jedis getJedis() {
+//        return jedis;
+//    }
 
-    private Ledis(Jedis jedis) {
-        this.jedis = jedis;
-    }
+//    private Ledis(Jedis jedis) {
+//        this.jedis = jedis;
+//    }
 
 
     public String set(String key, String value) {
@@ -83,8 +83,8 @@ public class Ledis implements LedisCommands {
         scanParams.count(3000);
         List<String> resultList = new ArrayList<String>();
         do {
-            ScanResult result = jedis.scan(scanCursor, scanParams.match(prefix + "*" + suffix));
-            scanCursor = result.getStringCursor();
+            ScanResult<String> result = jedis.scan(scanCursor, scanParams.match(prefix + "*" + suffix));
+            scanCursor = result.getCursor();
             resultList.addAll(result.getResult());
         } while (!(scanCursor.equals("0")));
         return resultList;
@@ -107,14 +107,14 @@ public class Ledis implements LedisCommands {
      */
     public List<String> mgets(String emptyValue, String... key) {
         List<String> results = new ArrayList<String>();
-        for (int i = 0; i < key.length; i++) {
-            String result = jedis.get(key[i]);
+        for (String s : key) {
+            String result = jedis.get(s);
             try {
                 if (ObjectUtil.isEmpty(result)) {
                     results.add(emptyValue);
                 } else results.add(result);
             } catch (NullPointerException e) {
-
+                e.printStackTrace();
             }
         }
         return results;
@@ -134,16 +134,13 @@ public class Ledis implements LedisCommands {
             throw new NullPointerException("redis doesn't have the object you want");
         else {
             byte[] value = jedis.get(key.getBytes());
-            Object object = SerializeObjectTool.unserizlize(value);
-            return object;
+            return SerializeObjectTool.unserizlize(value);
         }
     }
 
 
     /**
      * 以上为String操作
-     */
-    /**
      * 以下为List操作
      */
     public Long lpush(String key, String... strings) {
@@ -177,7 +174,7 @@ public class Ledis implements LedisCommands {
       * @return object object
      */
     public Long rpush(String key, Object... objects) {
-        byte[][] bytes = new byte[0][];
+        byte[][] bytes = new byte[objects.length][];
         for (int i = 0; i < objects.length; i++) {
             bytes[i] = SerializeObjectTool.serialize(objects[i]);
         }
@@ -237,8 +234,8 @@ public class Ledis implements LedisCommands {
         } else {
             List<byte[]> bytes = jedis.sort(key.getBytes());
             List<Object> objects = new ArrayList<Object>();
-            for (int i = 0; i < bytes.size(); i++) {
-                Object object = SerializeObjectTool.serialize(bytes.get(i));
+            for (byte[] aByte : bytes) {
+                Object object = SerializeObjectTool.serialize(aByte);
                 objects.add(object);
             }
             return objects;
@@ -262,7 +259,6 @@ public class Ledis implements LedisCommands {
     public Set<Object> smember(String key) {
         Set<Object> result = new HashSet<Object>();
         Set<byte[]> objects = jedis.smembers(key.getBytes());
-        Iterator<byte[]> it = objects.iterator();
         for (byte[] obj : objects) {
             try {
                 result.add(SerializeObjectTool.unserizlize(obj));
@@ -288,11 +284,10 @@ public class Ledis implements LedisCommands {
 
     public Object spop(String key) {
         byte[] object = jedis.spop(key.getBytes());
-        Object value;
         try {
-            return value = SerializeObjectTool.unserizlize(object);
+            return SerializeObjectTool.unserizlize(object);
         } catch (UnserizlizeException e) {
-            return value = new String(object);
+            return new String(object);
         }
     }
 
@@ -422,15 +417,15 @@ public class Ledis implements LedisCommands {
     public List<Object> hmget(String key, String... mapkeys) {
         byte[][] byteKeys = new byte[mapkeys.length][];
         for (int i = 0; i < mapkeys.length; i++) {
-            byteKeys[i] = mapkeys.toString().getBytes();
+            byteKeys[i] = Arrays.toString(mapkeys).getBytes();
         }
         List<byte[]> init = jedis.hmget(key.getBytes(), byteKeys);
         List<Object> result = new ArrayList<Object>();
-        for (int i = 0; i < init.size(); i++) {
-            try{
-                result.add(SerializeObjectTool.unserizlize(init.get(i)));
-            }catch (UnserizlizeException e){
-                result.add(new String(init.get(i)));
+        for (byte[] bytes : init) {
+            try {
+                result.add(SerializeObjectTool.unserizlize(bytes));
+            } catch (UnserizlizeException e) {
+                result.add(new String(bytes));
             }
         }
         return result;
@@ -484,7 +479,7 @@ public class Ledis implements LedisCommands {
     public Long hdel(String key, String... keys) {
         byte[][] byteKeys = new byte[keys.length][];
         for (int i = 0; i < keys.length; i++) {
-            byteKeys[i] = keys.toString().getBytes();
+            byteKeys[i] = Arrays.toString(keys).getBytes();
         }
         return jedis.hdel(key.getBytes(), byteKeys);
     }
