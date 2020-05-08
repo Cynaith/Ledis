@@ -13,10 +13,10 @@ import redis.clients.jedis.exceptions.JedisDataException;
 import java.util.*;
 
 /**
- *  @author : Cynaith
- *  @see LedisCommands
- *  @see SerializeObjectTool
- *  refer : https://blog.csdn.net/weixin_34152820/article/details/86443458
+ * @author : Cynaith
+ * @see LedisCommands
+ * @see SerializeObjectTool
+ * refer : https://blog.csdn.net/weixin_34152820/article/details/86443458
  **/
 public class Ledis implements LedisCommands {
 
@@ -47,14 +47,6 @@ public class Ledis implements LedisCommands {
 //        this.jedis = jedis;
 //    }
 
-
-    public String set(String key, String value) {
-        return jedis.set(key, value);
-    }
-
-    public String get(String key) {
-        return jedis.get(key);
-    }
 
     public String type(String key) {
         return jedis.type(key);
@@ -90,29 +82,58 @@ public class Ledis implements LedisCommands {
         return resultList;
     }
 
-    public Long setnx(String key, String value) {
-        return jedis.setnx(key, value);
+    public Long setnx(String key, Object value) {
+        if (value instanceof java.io.Serializable)
+            if (value instanceof String)
+                return jedis.setnx(key, value.toString());
+            else {
+                return jedis.setnx(key.getBytes(), SerializeObjectTool.serialize(value));
+            }
+        else {
+            throw new UnserizlizeException("object should be serialization");
+        }
     }
 
-    public List<String> mget(String... key) {
-        return jedis.mget(key);
+    public List<Object> mget(String... key) {
+        byte[][] init = new byte[key.length][];
+        for (int i = 0; i < key.length; i++) {
+            init[i] = key[i].getBytes();
+        }
+        List<byte[]> values = jedis.mget(init);
+        List<Object> results = new ArrayList<Object>();
+        for (byte[] value : values) {
+            try {
+                results.add(SerializeObjectTool.unserizlize(value));
+            } catch (UnserizlizeException e) {
+                results.add(new String(value));
+            }
+
+        }
+        return results;
     }
 
     /**
      * 当key不存在时，返回emptyValue
      *
      * @param emptyValue emptyValue
-     * @param key key
-      * @return object object
+     * @param key        key
+     * @return object object
      */
-    public List<String> mgets(String emptyValue, String... key) {
-        List<String> results = new ArrayList<String>();
+    public List<Object> mgetWithNull(String emptyValue, String... key) {
+        List<Object> results = new ArrayList<Object>();
         for (String s : key) {
-            String result = jedis.get(s);
+            byte[] value = jedis.get(s.getBytes());
             try {
-                if (ObjectUtil.isEmpty(result)) {
+                if (ObjectUtil.isEmpty(value)) {
                     results.add(emptyValue);
-                } else results.add(result);
+                } else {
+                    try {
+                        results.add(SerializeObjectTool.unserizlize(value));
+                    } catch (UnserizlizeException e) {
+                        results.add(new String(value));
+                    }
+
+                }
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
@@ -120,21 +141,28 @@ public class Ledis implements LedisCommands {
         return results;
     }
 
-    public String setObj(String key, Object value) {
+    public String set(String key, Object value) {
         if (value instanceof java.io.Serializable)
-            return jedis.set(key.getBytes(), SerializeObjectTool.serialize(value));
-
+            if (value instanceof String)
+                return jedis.set(key, value.toString());
+            else {
+                return jedis.set(key.getBytes(), SerializeObjectTool.serialize(value));
+            }
         else {
             throw new UnserizlizeException("object should be serialization");
         }
     }
 
-    public Object getObj(String key) {
+    public Object get(String key) {
         if (!jedis.exists(key.getBytes()))
-            throw new NullPointerException("redis doesn't have the object you want");
+            return null;
         else {
             byte[] value = jedis.get(key.getBytes());
-            return SerializeObjectTool.unserizlize(value);
+            try {
+                return SerializeObjectTool.unserizlize(value);
+            } catch (UnserizlizeException e) {
+                return new String(value);
+            }
         }
     }
 
@@ -154,9 +182,9 @@ public class Ledis implements LedisCommands {
     /**
      * 从左边追加一个Object到list(key)中
      *
-     * @param key key
+     * @param key     key
      * @param objects objects
-      * @return object object
+     * @return object object
      */
     public Long lpush(String key, Object... objects) {
         byte[][] bytes = new byte[objects.length][];
@@ -169,9 +197,9 @@ public class Ledis implements LedisCommands {
     /**
      * 从右边追加一个Object到list(key)中
      *
-     * @param key key
+     * @param key     key
      * @param objects objects
-      * @return object object
+     * @return object object
      */
     public Long rpush(String key, Object... objects) {
         byte[][] bytes = new byte[objects.length][];
@@ -182,19 +210,23 @@ public class Ledis implements LedisCommands {
     }
 
     public Long llen(String key) {
-        return jedis.llen(key);
+        return jedis.llen(key.getBytes());
     }
 
     public Object lindex(String key, int index) {
-        return jedis.lindex(key, index);
+        return jedis.lindex(key.getBytes(), index);
     }
 
     public Long lrem(String key, long count, Object value) {
-        if (value instanceof String) {
-            return jedis.lrem(key, count, value.toString());
-        } else {
-            byte[] bytes = SerializeObjectTool.serialize(value);
-            return jedis.lrem(key.getBytes(), count, bytes);
+        if (value instanceof java.io.Serializable)
+            if (value instanceof String) {
+                return jedis.lrem(key, count, value.toString());
+            } else {
+                byte[] bytes = SerializeObjectTool.serialize(value);
+                return jedis.lrem(key.getBytes(), count, bytes);
+            }
+        else {
+            throw new UnserizlizeException("object should be serialization");
         }
     }
 
@@ -211,11 +243,15 @@ public class Ledis implements LedisCommands {
     }
 
     public String lset(String key, int index, Object value) {
-        if (value instanceof String) {
-            return jedis.lset(key, index, value.toString());
+        if (value instanceof java.io.Serializable) {
+            if (value instanceof String) {
+                return jedis.lset(key, index, value.toString());
+            } else {
+                byte[] bytes = SerializeObjectTool.serialize(value);
+                return jedis.lset(key.getBytes(), index, bytes);
+            }
         } else {
-            byte[] bytes = SerializeObjectTool.serialize(value);
-            return jedis.lset(key.getBytes(), index, bytes);
+            throw new UnserizlizeException("object should be serialization");
         }
     }
 
@@ -244,13 +280,15 @@ public class Ledis implements LedisCommands {
 
     public Long sadd(String key, Object... objects) {
         byte[][] bytes = new byte[objects.length][];
-
         for (int i = 0; i < objects.length; i++) {
-
-            if (objects[i] instanceof String) {
-                bytes[i] = ((String) objects[i]).getBytes();
+            if (objects[i] instanceof java.io.Serializable) {
+                if (objects[i] instanceof String) {
+                    bytes[i] = ((String) objects[i]).getBytes();
+                } else {
+                    bytes[i] = SerializeObjectTool.serialize(objects[i]);
+                }
             } else {
-                bytes[i] = SerializeObjectTool.serialize(objects[i]);
+                throw new UnserizlizeException("object should be serialization");
             }
         }
         return jedis.sadd(key.getBytes(), bytes);
@@ -273,10 +311,14 @@ public class Ledis implements LedisCommands {
     public Long srem(String key, Object... objects) {
         byte[][] bytes = new byte[objects.length][];
         for (int i = 0; i < objects.length; i++) {
-            if (objects[i] instanceof String) {
-                bytes[i] = objects[i].toString().getBytes();
+            if (objects[i] instanceof java.io.Serializable) {
+                if (objects[i] instanceof String) {
+                    bytes[i] = objects[i].toString().getBytes();
+                } else {
+                    bytes[i] = SerializeObjectTool.serialize(objects[i]);
+                }
             } else {
-                bytes[i] = SerializeObjectTool.serialize(objects[i]);
+                throw new UnserizlizeException("object should be serialization");
             }
         }
         return jedis.srem(key.getBytes(), bytes);
@@ -296,11 +338,16 @@ public class Ledis implements LedisCommands {
     }
 
     public Long smove(String key1, String key2, Object val) {
-        if (val instanceof String) {
-            return jedis.smove(key1, key2, val.toString());
+        if (val instanceof java.io.Serializable) {
+            if (val instanceof String) {
+                return jedis.smove(key1, key2, val.toString());
+            } else {
+                return jedis.smove(key1.getBytes(), key2.getBytes(), SerializeObjectTool.serialize(val));
+            }
         } else {
-            return jedis.smove(key1.getBytes(), key2.getBytes(), SerializeObjectTool.serialize(val));
+            throw new UnserizlizeException("object should be serialization");
         }
+
     }
 
     public Set<Object> sinter(String key1, String key2) {
@@ -405,10 +452,14 @@ public class Ledis implements LedisCommands {
     public String hmset(String key, Map<String, Object> map) {
         Map<byte[], byte[]> byteMap = new HashMap<byte[], byte[]>();
         for (Map.Entry<String, Object> objectEntry : map.entrySet()) {
-            if (objectEntry.getValue() instanceof String) {
-                byteMap.put(objectEntry.getKey().getBytes(), objectEntry.getValue().toString().getBytes());
+            if (objectEntry.getValue() instanceof java.io.Serializable) {
+                if (objectEntry.getValue() instanceof String) {
+                    byteMap.put(objectEntry.getKey().getBytes(), objectEntry.getValue().toString().getBytes());
+                } else {
+                    byteMap.put(objectEntry.getKey().getBytes(), SerializeObjectTool.serialize(objectEntry.getValue()));
+                }
             } else {
-                byteMap.put(objectEntry.getKey().getBytes(), SerializeObjectTool.serialize(objectEntry.getValue()));
+                throw new UnserizlizeException("object should be serialization");
             }
         }
         return jedis.hmset(key.getBytes(), byteMap);
@@ -432,10 +483,14 @@ public class Ledis implements LedisCommands {
     }
 
     public Long hset(String key, String mapkey, Object mapvalue) {
-        if (mapvalue instanceof String) {
-            return jedis.hset(key, mapkey, mapvalue.toString());
+        if (mapvalue instanceof java.io.Serializable) {
+            if (mapvalue instanceof String) {
+                return jedis.hset(key, mapkey, mapvalue.toString());
+            } else {
+                return jedis.hset(key.getBytes(), mapkey.getBytes(), SerializeObjectTool.serialize(mapvalue));
+            }
         } else {
-            return jedis.hset(key.getBytes(), mapkey.getBytes(), SerializeObjectTool.serialize(mapvalue));
+            throw new UnserizlizeException("object should be serialization");
         }
 
     }
