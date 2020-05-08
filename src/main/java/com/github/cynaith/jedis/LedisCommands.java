@@ -12,21 +12,6 @@ import java.util.Set;
 public interface LedisCommands {
     /**
      *
-     * @param key 字符串类型的key
-     * @param value 字符串类型的value
-     * @return 返回value
-     */
-    String set(String key,String value);
-
-    /**
-     *
-     * @param key 字符串类型的key
-     * @return 返回key对应的value
-     */
-    String get(String key);
-
-    /**
-     *
      * @param key redis中存储的key
      * @return 返回键为key所对应value的数据类型
      */
@@ -52,34 +37,48 @@ public interface LedisCommands {
     String rename(String oldKey,String newKey);
 
     /**
+     * String
+     */
+
+    /**
+     * @param key redis中对应的key
+     * @param value redis中对应的value(插入对象)
+     * @return 插入成功返回OK
+     * @throws com.github.cynaith.exceptions.UnserizlizeException
+     */
+    String set(String key,Object value);
+
+    /**
+     *
+     *  @param key redis中对应的key
+     *  @return key对应的对象 (或字符串对象)
+     */
+    Object get(String key);
+
+    /**
      *
      * @param key redis中对应的key
      * @return 移除一个key,返回id
      */
     Long del(String key);
 
-    /**
-     *
-     * @param prefix 检索前缀
-     * @param suffix 检索后缀
-     * @return 检索列表
-     */
-    List<String> scan(String prefix,String suffix);
+
 
     /**
      *
      * @param key redis中对应的key
      * @param value redis中对应的key
      * @return redis中对应的id
+     * @throws com.github.cynaith.exceptions.UnserizlizeException
      */
-    Long setnx(String key, String value);
+    Long setnx(String key, Object value);
 
     /**
      *
      * @param key redis对应的多个key
      * @return 返回多个key对应的List
      */
-    List<String> mget(String... key);
+    List<Object> mget(String... key);
 
     /**
      * 获取多个key
@@ -88,21 +87,9 @@ public interface LedisCommands {
      * @param key redis中对应的key
      * @return 多个key对应的List 包含空返回
      */
-    List<String> mgets(String emptyValue,String... key);
+    List<Object> mgetWithNull(String emptyValue,String... key);
 
-    /**
-     * @param key redis中对应的key
-     * @param value redis中对应的value(插入对象)
-     * @return 插入成功返回OK
-     */
-    String setObj(String key,Object value);
 
-    /**
-     *
-     *  @param key redis中对应的key
-     *  @return key对应的对象 (或字符串对象)
-     */
-    Object getObj(String key);
 
     /**
      * List操作
@@ -160,7 +147,8 @@ public interface LedisCommands {
      * @param key redis中list对应的key
      * @param count 删除数量
      * @param value 删除的value
-      * @return 返回列表长度
+     * @return 返回列表长度
+     * @throws com.github.cynaith.exceptions.UnserizlizeException
      */
      Long lrem(String key,long count,Object value);
 
@@ -192,7 +180,8 @@ public interface LedisCommands {
      * @param key redis中list对应的key
      * @param index 插入处索引
      * @param object 插入新value
-      * @return 状态码
+     * @return 状态码
+     * @throws com.github.cynaith.exceptions.UnserizlizeException
      */
      String lset(String key,int index,Object object);
 
@@ -219,6 +208,7 @@ public interface LedisCommands {
      * @param key redis中set对应的key
      * @param objects 向set中插入的多个对象
      * @return 添加成功返回1 失败则0
+     * @throws com.github.cynaith.exceptions.UnserizlizeException
      */
     Long sadd(String key, Object... objects);
 
@@ -235,6 +225,7 @@ public interface LedisCommands {
      * @param key redis中set对应的key
      * @param objects 删除的对象
      * @return 元素被删除返回1，否则0
+     * @throws com.github.cynaith.exceptions.UnserizlizeException
      */
     Long srem(String key, Object... objects);
 
@@ -259,6 +250,7 @@ public interface LedisCommands {
      * @param key2 redis中set对应的key
      * @param val 移动的对象
      * @return 移动成功返回1，否则0
+     * @throws com.github.cynaith.exceptions.UnserizlizeException
      */
     Long smove(String key1, String key2, Object val);
 
@@ -405,6 +397,7 @@ public interface LedisCommands {
      *  @param key redis中hash对应的key
      *  @param map 向hash中插入多个值
      *  @return 状态码
+     *  @throws com.github.cynaith.exceptions.UnserizlizeException
      */
     String hmset(String key, Map<String,Object> map);
 
@@ -422,6 +415,7 @@ public interface LedisCommands {
      *  @param mapkey hash中的K
      *  @param mapvalue hash中的K
      *  @return 状态码
+     *  @throws com.github.cynaith.exceptions.UnserizlizeException
      */
     Long hset(String key, String mapkey, Object mapvalue);
 
@@ -468,4 +462,12 @@ public interface LedisCommands {
      * @return 是否存在
      */
     boolean hexists(String key,String mapkey);
+
+    /**
+     *
+     * @param prefix 检索前缀
+     * @param suffix 检索后缀
+     * @return 检索列表
+     */
+    List<String> scan(String prefix,String suffix);
 }
