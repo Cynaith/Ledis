@@ -13,7 +13,7 @@ Maven
 <dependency>
   <groupId>com.github.cynaith</groupId>
   <artifactId>LightRedis</artifactId>
-  <version>1.2-RELEASE</version>
+  <version>1.3-RELEASE</version>
 </dependency>
 ```
 
@@ -21,15 +21,15 @@ Maven
 Ledis ledis = new Ledis("127.0.0.1",6379);
 ```
 
-
-#### 字符串
+#### 优化
 - `List<String> scan(String prefix,String suffix);`
     - 查询指定前缀后缀的value
+#### 字符串
 - `List<String> mgets(String emptyValue,String... key);`
     - 获取多个key,当key不存在时，返回emptyValue
-- `String setObj(String key,Object value);`
+- `String set(String key,Object value);`
     - 插入对象
-- `Object getObj(String key);`
+- `Object get(String key);`
     - 获取对象
 
 #### List
