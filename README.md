@@ -1,6 +1,6 @@
 # Ledis
 ![https://img.shields.io/apm/l/vim-mode](https://img.shields.io/apm/l/vim-mode)
-[![https://img.shields.io/appveyor/build/gruntjs/grunt?label=1.2.release](https://img.shields.io/appveyor/build/gruntjs/grunt?label=1.2.release)](https://search.maven.org/artifact/com.github.cynaith/LightRedis/1.0-RELEASE/jar)
+[![https://img.shields.io/appveyor/build/gruntjs/grunt?label=1.2.release](https://img.shields.io/appveyor/build/gruntjs/grunt?label=1.2.release)](https://mvnrepository.com/artifact/com.github.cynaith/LightRedis)
 [![https://img.shields.io/badge/%E4%B8%AA%E4%BA%BA%E4%B8%BB%E9%A1%B5-Cynaith-green](https://img.shields.io/badge/%E4%B8%AA%E4%BA%BA%E4%B8%BB%E9%A1%B5-Cynaith-green)](https://cynaith.github.io/)
 > 可以对Redis直接存储对象
 
