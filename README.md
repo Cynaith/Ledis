@@ -80,10 +80,13 @@ Ledis ledis = new Ledis("127.0.0.1",6379);
 
 
 
-- 1.0 release
-发布基础版本
-- 1.1 release
-修改for -> foreach
-- 1.2 release
-修复依赖问题
-修复scan的bug
+#### 1.0-RELEASE
+- 发布基础版本
+#### 1.1-RELEASE
+- 修改for -> foreach
+#### 1.2-RELEASE
+- 修复依赖问题
+- 修复scan的bug
+#### 1.3-RELEASE
+- 整合String类型的对象插入
+- Object未序列化时，抛出运行时UnserizlizeException异常
